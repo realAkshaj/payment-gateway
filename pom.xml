@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.paymentgateway</groupId>
+  <artifactId>payment-gateway</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>Payment Gateway Platform</name>
+  <description>Distributed payment gateway — learning project</description>
+
+  <!-- Child modules — we'll uncomment each as we build it -->
+  <modules>
+    <module>common</module>
+    <!-- <module>api-gateway</module> -->
+    <!-- <module>payment-service</module> -->
+    <!-- <module>card-vault-service</module> -->
+    <!-- <module>ledger-service</module> -->
+    <!-- <module>webhook-service</module> -->
+    <!-- <module>settlement-service</module> -->
+  </modules>
+
+  <properties>
+    <java.version>21</java.version>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring.boot.version>3.2.0</spring.boot.version>
+    <spring.cloud.version>2023.0.0</spring.cloud.version>
+    <kafka.version>3.6.0</kafka.version>
+    <testcontainers.version>1.19.3</testcontainers.version>
+    <opentelemetry.version>2.1.0</opentelemetry.version>
+  </properties>
+
+  <!--
+      Spring Boot parent gives us:
+      - Dependency version management for 300+ libraries
+      - Default Maven plugin configurations
+      - The spring-boot-maven-plugin for building runnable JARs
+  -->
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.2.0</version>
+    <relativePath/>
+  </parent>
+
+  <!--
+      dependencyManagement = "these versions are available"
+      It does NOT add them to any module.
+      Child modules declare the dependency without a version
+      and Maven uses the version declared here.
+  -->
+  <dependencyManagement>
+    <dependencies>
+
+      <!-- Spring Cloud (Gateway, Circuit Breaker, etc.) -->
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring.cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Testcontainers BOM — real Kafka/Postgres in tests -->
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>${testcontainers.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Internal modules — so services can depend on 'common' -->
+      <dependency>
+        <groupId>com.paymentgateway</groupId>
+        <artifactId>common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <!-- Dependencies every single module gets automatically -->
+  <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- Builds executable JARs for each service -->
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <configuration>
+            <excludes>
+              <exclude>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+              </exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>
