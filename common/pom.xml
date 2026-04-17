@@ -29,6 +29,12 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- JSR-303 validation annotations (@NotNull, @Size, etc.) -->
         <dependency>
             <groupId>jakarta.validation</groupId>
@@ -53,6 +59,8 @@
                 </configuration>
             </plugin>
         </plugins>
+
+
     </build>
 
 </project>
