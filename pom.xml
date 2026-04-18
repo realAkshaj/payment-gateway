@@ -20,7 +20,7 @@
      <module>api-gateway</module>
      <module>payment-service</module>
      <module>card-vault-service</module>
-    <!-- <module>ledger-service</module> -->
+     <module>ledger-service</module>
     <!-- <module>webhook-service</module> -->
     <!-- <module>settlement-service</module> -->
   </modules>

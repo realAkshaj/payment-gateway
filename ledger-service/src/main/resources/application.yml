@@ -1,0 +1,32 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: ledger-service
+
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/ledger_db
+    username: pguser
+    password: pgpass
+
+  flyway:
+    url: jdbc:postgresql://localhost:5432/ledger_db
+    user: pguser
+    password: pgpass
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: ledger-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
