@@ -221,4 +221,14 @@ public class PaymentService {
         return ex.getMessage() != null &&
                 ex.getMessage().contains("uq_idempotency_key");
     }
+
+    /**
+     * Retrieves a payment by ID for status polling.
+     * Returns empty Mono if not found — controller returns 404.
+     */
+    public Mono<PaymentResponse> getPayment(UUID paymentId) {
+        return paymentRepository.findById(paymentId)
+                .map(this::toResponse);
+    }
+
 }
