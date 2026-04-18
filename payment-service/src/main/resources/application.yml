@@ -1,0 +1,60 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: payment-service
+
+  # R2DBC — reactive database connection
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/payments_db
+    username: pguser
+    password: pgpass
+    pool:
+      initial-size: 10
+      max-size: 30
+
+  # Flyway uses regular JDBC (not R2DBC) for migrations
+  flyway:
+    url: jdbc:postgresql://localhost:5432/payments_db
+    user: pguser
+    password: pgpass
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  # Kafka configuration
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # Exactly-once semantics
+      acks: all
+      retries: 3
+      properties:
+        enable.idempotence: true
+    consumer:
+      group-id: payment-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+# Actuator — exposes /actuator/health endpoint
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# Resilience4J circuit breaker config
+resilience4j:
+  circuitbreaker:
+    instances:
+      cardVault:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
