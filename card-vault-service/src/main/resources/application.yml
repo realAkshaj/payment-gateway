@@ -1,0 +1,24 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: card-vault-service
+
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/card_vault_db
+    username: pguser
+    password: pgpass
+
+  flyway:
+    url: jdbc:postgresql://localhost:5432/card_vault_db
+    user: pguser
+    password: pgpass
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
