@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-
+import io.r2dbc.postgresql.codec.Json;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -111,8 +111,6 @@ public class PaymentService {
                 .cardToken(request.getCardToken())
                 .idempotencyKey(request.getIdempotencyKey())
                 .correlationId(correlationId)
-                .createdAt(Instant.now())
-                .updatedAt(Instant.now())
                 .build();
 
         // Save payment first, then save outbox event
@@ -180,9 +178,8 @@ public class PaymentService {
                 .aggregateType("payment")
                 .aggregateId(payment.getId())
                 .eventType(EventType.PAYMENT_INITIATED.name())
-                .payload(payload)
+                .payload(Json.of(payload))
                 .processed(false)
-                .createdAt(Instant.now())
                 .build();
     }
 
